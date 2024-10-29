@@ -2,7 +2,6 @@
 
 SoftwareSerial miBT(10, 11);
 
-
 const int LED = 13;
 const int boton = 2;
 
