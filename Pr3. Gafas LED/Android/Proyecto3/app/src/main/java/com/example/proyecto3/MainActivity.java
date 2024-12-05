@@ -29,7 +29,8 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
 
     // Elementos gráficos
-    SeekBar barLuz;
+    private SeekBar barLuz;
+    private SeekBar barVolumen;
     private Grafica grafica_frecSonido;
     private Grafica grafica_frecLED;
     private Grafica grafica_intensidadLED;
@@ -60,10 +61,12 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler = new Handler();
     private Runnable runnable;
 
+    RuidoBlanco ruidoBlanco;
+
     int tam_paso = 500;    // Intervalo de muestreo en ms (medio segundo)
     private boolean ejecutar = true;
     private float maxLED = 1;           // Intensidad máxima del LED
-
+    private float divisorVolumen = 400.0f;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         barLuz = findViewById(R.id.barLuz);
-        barLuz.setProgress(100);
+        barLuz.setProgress(50);
+        maxLED = 50f/100;
         barLuz.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -109,6 +113,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 // Este método se llama cuando el usuario deja de interactuar con el SeekBar
+            }
+        });
+
+        barVolumen = findViewById(R.id.barVolumen);
+        barVolumen.setProgress(50);
+        ruidoBlanco = new RuidoBlanco(50/divisorVolumen);
+        barVolumen.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                float volume = progress / divisorVolumen;
+                ruidoBlanco.updateVolume(volume);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
 
@@ -247,6 +270,9 @@ public class MainActivity extends AppCompatActivity {
         float segundosPorUnidad = 0.5f;
         float minutosAMilis = segundosPorUnidad * 1000f; // Conversión de minutos a milisegundos
 
+        // Comenzar a reproducir ruido blanco
+        ruidoBlanco.startPlaying(tabla_frecSonido.get(0)[1]);
+
         runnable = new Runnable() {
             int contador_milis = 0; // Tiempo transcurrido en ms
             int index_fsonido = 0;
@@ -287,6 +313,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("Muestra", "frecuencia_sonido: " + frecuencia_sonido);
                     Log.d("Muestra", "frecuencia_LED: " + frecuencia_LED);
                     Log.d("Muestra", "intensidad_LED: " + intensidad_LED);
+                    ruidoBlanco.updateFrequency(frecuencia_sonido);
                     float frecRel = (100*frecuencia_LED)/40;
                     float intRel = maxLED*intensidad_LED;
                     if(intRel > 100)
@@ -334,4 +361,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ruidoBlanco.stopPlaying();
+    }
 }
