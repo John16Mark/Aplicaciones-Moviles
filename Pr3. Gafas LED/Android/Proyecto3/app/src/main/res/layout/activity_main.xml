@@ -71,8 +71,8 @@
                     android:layout_gravity="center"
                     android:layout_width="180dp"
                     android:layout_height="wrap_content"
-                    android:textOff="RUIDO"
-                    android:textOn="TONO BLANCO"
+                    android:textOff="TONO BLANCO"
+                    android:textOn="RUIDO"
                     android:layout_marginBottom="26dp"/>
             </LinearLayout>
 

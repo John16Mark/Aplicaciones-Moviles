@@ -10,6 +10,7 @@ public class RuidoBlanco {
     private boolean isPlaying = false;
     private float freq;
     private float volume;
+    private boolean isTone = false; // Por defecto, ruido blanco
 
     public RuidoBlanco(float volumen) {
         volume = volumen;
@@ -35,15 +36,17 @@ public class RuidoBlanco {
         new Thread(() -> {
             short[] buffer = new short[bufferSize];
             while (isPlaying) {
-                // Generar ruido blanco
-                short[] noise = generateWhiteNoise(bufferSize);
-
-                // Ajustar frecuencia según el valor de la tabla
-                float cutoffFrequency = mapTableValueToFrequency(freq);
-                short[] filteredNoise = applyLowPassFilter(noise, cutoffFrequency, 44100);
-
-                // Escribir el ruido filtrado en el buffer de audio
-                audioTrack.write(filteredNoise, 0, filteredNoise.length);
+                if (isTone) {
+                    // Generar tono
+                    short[] tone = generateTone(mapTableValueToFrequency(freq), bufferSize, SAMPLE_RATE);
+                    audioTrack.write(tone, 0, tone.length);
+                } else {
+                    // Generar ruido blanco
+                    short[] noise = generateWhiteNoise(bufferSize);
+                    float cutoffFrequency = mapTableValueToFrequency(freq);
+                    short[] filteredNoise = applyLowPassFilter(noise, cutoffFrequency, SAMPLE_RATE);
+                    audioTrack.write(filteredNoise, 0, filteredNoise.length);
+                }
                 audioTrack.play();
             }
         }).start();
@@ -68,6 +71,14 @@ public class RuidoBlanco {
         return noise;
     }
 
+    private short[] generateTone(float frequency, int size, float sampleRate) {
+        short[] tone = new short[size];
+        for (int i = 0; i < size; i++) {
+            tone[i] = (short) (Math.sin(2 * Math.PI * frequency * i / sampleRate) * Short.MAX_VALUE);
+        }
+        return tone;
+    }
+
     private short[] applyLowPassFilter(short[] buffer, float cutoffFrequency, float sampleRate) {
         int size = buffer.length;
         short[] filteredBuffer = new short[size];
@@ -87,7 +98,6 @@ public class RuidoBlanco {
         return minFrequency + (maxFrequency - minFrequency) * (value / 40.0f);
     }
 
-
     public void updateFrequency(float nuevaFrecuencia) {
         freq = nuevaFrecuencia;
     }
@@ -96,5 +106,9 @@ public class RuidoBlanco {
         if (audioTrack != null) {
             audioTrack.setVolume(volume);
         }
+    }
+
+    public void toggleSoundType(boolean tone) {
+        isTone = tone;
     }
 }

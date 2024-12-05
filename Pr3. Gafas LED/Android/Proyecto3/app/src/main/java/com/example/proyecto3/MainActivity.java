@@ -87,17 +87,6 @@ public class MainActivity extends AppCompatActivity {
 
         grafica_intensidadLED.setEjeY(100, 20);
 
-        btnPausa.setChecked(ejecutar);
-        btnPausa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ejecutar = !ejecutar;
-                if (ejecutar) {
-                    handler.postDelayed(runnable, tam_paso);
-                }
-            }
-        });
-
         barLuz = findViewById(R.id.barLuz);
         barLuz.setProgress(50);
         maxLED = 50f/100;
@@ -133,6 +122,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
+        });
+
+        btnPausa.setChecked(ejecutar);
+        btnPausa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ejecutar = !ejecutar;
+                if (ejecutar) {
+                    handler.postDelayed(runnable, tam_paso);
+                }
+            }
+        });
+
+        btnRuido.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Cambiar entre ruido blanco y tono
+            ruidoBlanco.toggleSoundType(isChecked);
         });
 
         // Inicializar los puntos
