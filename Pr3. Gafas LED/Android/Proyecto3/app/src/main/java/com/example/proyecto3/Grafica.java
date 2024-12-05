@@ -14,8 +14,11 @@ public class Grafica extends View {
 
     private Paint axisPaint, textPaint, titlePaint, linePaint, pointPaint, gridPaint;
     private List<float[]> points = new ArrayList<>();
-    private float tMax = 60; // Máximo valor del eje t
-    private float hzMax = 40; // Máximo valor del eje Hz
+    private float xMax = 60; // Máximo valor del eje t
+    private float yMax = 40; // Máximo valor del eje y
+    private int xPaso = 4;
+    private int yPaso = 8;
+    private String yEtiqueta = "Hz";
     private float currentT = 0; // Tiempo actual en la gráfica
 
     public Grafica(Context context, AttributeSet attrs) {
@@ -59,6 +62,12 @@ public class Grafica extends View {
         invalidate();
     }
 
+    public void setEjeY(int max, int paso) {
+        this.yMax = max;
+        this.yPaso = paso;
+        this.yEtiqueta = "A";
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -71,12 +80,12 @@ public class Grafica extends View {
         float graphHeight = height - padding * 2;
 
         // Dibuja la cuadrícula
-        for (int i = 0; i <= tMax; i += 2) {
-            float x = padding + (i / tMax) * graphWidth;
+        for (int i = 0; i <= xMax; i += xPaso/2) {
+            float x = padding + (i / xMax) * graphWidth;
             canvas.drawLine(x, height - padding, x, padding, gridPaint); // Líneas verticales
         }
-        for (int i = 0; i <= hzMax; i += 4) {
-            float y = height - padding - (i / hzMax) * graphHeight;
+        for (int i = 0; i <= yMax; i += yPaso/2) {
+            float y = height - padding - (i / yMax) * graphHeight;
             canvas.drawLine(padding, y, width - padding, y, gridPaint); // Líneas horizontales
         }
 
@@ -85,19 +94,19 @@ public class Grafica extends View {
         canvas.drawLine(padding, height - padding, padding, padding, axisPaint); // Eje Hz
 
         // Etiquetas de los ejes
-        for (int i = 0; i <= tMax; i += 4) {
-            float x = padding + (i / tMax) * graphWidth;
+        for (int i = 0; i <= xMax; i += xPaso) {
+            float x = padding + (i / xMax) * graphWidth;
             canvas.drawText(String.valueOf(i), x - 15, height - padding + 40, textPaint);
         }
 
-        for (int i = 0; i <= hzMax; i += 8) {
-            float y = height - padding - (i / hzMax) * graphHeight;
+        for (int i = 0; i <= yMax; i += yPaso) {
+            float y = height - padding - (i / yMax) * graphHeight;
             canvas.drawText(String.valueOf(i), padding - 50, y + 10, textPaint);
         }
 
         // Nombres de los ejes
         canvas.drawText("t", width - padding + 20, height - padding + 20, titlePaint);
-        canvas.drawText("Hz", padding - 50, padding - 20, titlePaint);
+        canvas.drawText(yEtiqueta, padding - 50, padding - 20, titlePaint);
 
         // Dibuja las líneas y puntos
         if (points != null && points.size() > 1) {
@@ -105,8 +114,8 @@ public class Grafica extends View {
             float prevY = height - padding;
 
             for (float[] point : points) {
-                float x = padding + (point[0] / tMax) * graphWidth;
-                float y = height - padding - (point[1] / hzMax) * graphHeight;
+                float x = padding + (point[0] / xMax) * graphWidth;
+                float y = height - padding - (point[1] / yMax) * graphHeight;
 
                 if (point[0] <= currentT) {
                     canvas.drawLine(prevX, prevY, x, y, linePaint);
@@ -118,12 +127,4 @@ public class Grafica extends View {
             }
         }
     }
-
-    // Interpolación lineal entre dos puntos
-    private float interpolate(float x1, float y1, float x2, float y2, float currentX, float maxHz) {
-        if (currentX <= x1) return y1;
-        if (currentX >= x2) return y2;
-        return y1 + (y2 - y1) * ((currentX - x1) / (x2 - x1));
-    }
-
 }
