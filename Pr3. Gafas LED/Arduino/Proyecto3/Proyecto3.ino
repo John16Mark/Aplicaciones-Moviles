@@ -3,17 +3,26 @@
 // Objetos
 SoftwareSerial miBT(10, 11);
 
-const int LED1 = 9;
+const int pin_LED1 = 3; // LED izquierdo 1
+const int pin_LED2 = 5; // LED izquierdo 2
+const int pin_LED3 = 6; // LED derecho 1
+const int pin_LED4 = 9; // LED derecho 2
+
 int brightness = 0;   // Nivel de brillo inicial (0-255)
-int LED = 0;
-int valorMaxLED = 255; // No debe superar 255
+int LED_izq = 0;
+int LED_der = 0;
+int valorMaxLED = 100; // No debe superar 255
 
 unsigned long previousMillis = 0; // Para manejar el parpadeo
-int blinkInterval = 1000; // Intervalo de parpadeo en ms (por defecto 1 Hz)
+int blinkInterval = 1000;         // Intervalo de parpadeo en ms (por defecto 1 Hz)
 bool ledState = false;
+int codigo = 0;                   // Código recibido desde la aplicación
 
 void setup() {
-  pinMode(LED1, OUTPUT); // Configura el pin del LED como salida
+  pinMode(pin_LED1, OUTPUT);
+  pinMode(pin_LED2, OUTPUT);
+  pinMode(pin_LED3, OUTPUT);
+  pinMode(pin_LED4, OUTPUT);
   miBT.begin(38400);
   Serial.begin(9600);
 }
@@ -25,41 +34,75 @@ void loop() {
     Serial.print("Valor recibido: ");
     Serial.println(receivedValue);
 
-    // Separar los valores de frecuencia y amplitud
-    int commaIndex = receivedValue.indexOf(','); // Encontrar la posición de la coma
-    if (commaIndex > 0) { // Si hay una coma
-      String frecuenciaStr = receivedValue.substring(0, commaIndex);
-      String amplitudStr = receivedValue.substring(commaIndex + 1);
+    // Separar los valores
+    int firstCommaIndex = receivedValue.indexOf(',');
+    int secondCommaIndex = receivedValue.indexOf(',', firstCommaIndex + 1);
 
-      int frecuencia = frecuenciaStr.toInt(); // Convertir frecuencia a entero
-      int amplitud = amplitudStr.toInt();     // Convertir amplitud a entero
+    if (firstCommaIndex > 0 && secondCommaIndex > firstCommaIndex) {
+      String frecuenciaStr = receivedValue.substring(0, firstCommaIndex);
+      String amplitudStr = receivedValue.substring(firstCommaIndex + 1, secondCommaIndex);
+      String codigoStr = receivedValue.substring(secondCommaIndex + 1);
+
+      int frecuencia = frecuenciaStr.toInt();
+      int amplitud = amplitudStr.toInt();
+      codigo = codigoStr.toInt();
 
       // Calcular el intervalo de parpadeo
       if (frecuencia > 0) {
-        blinkInterval = 1000 / frecuencia; // Convertir Hz a milisegundos
+        blinkInterval = 1000 / frecuencia;
       }
 
-      // Calcular el brillo del LED
-      LED = map(amplitud, 0, 100, 0, valorMaxLED); // Mapear amplitud (0-100) a brillo (0-255)
-      
+      // Calcular el brillo de los LEDs
+      LED_izq = map(amplitud, 0, 100, 0, valorMaxLED);
+      LED_der = map(amplitud, 0, 100, 0, valorMaxLED);
+
       Serial.print("Frecuencia (Hz): ");
       Serial.println(frecuencia);
       Serial.print("Amplitud (%): ");
       Serial.println(amplitud);
-      Serial.print("Brillo mapeado (0-255): ");
-      Serial.println(LED);
+      Serial.print("Código: ");
+      Serial.println(codigo);
     }
   }
 
-  // Manejo del parpadeo del LED
+  // Manejo del parpadeo basado en el código
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= blinkInterval) {
     previousMillis = currentMillis; // Actualizar tiempo previo
     ledState = !ledState;           // Cambiar el estado del LED
-    if (ledState) {
-      analogWrite(LED1, LED);       // Encender el LED con la intensidad calculada
+
+    if (codigo == 2) {
+      // Secuencia alternada: LEDs derechos y luego izquierdos
+      if (ledState) {
+        analogWrite(pin_LED1, 0);
+        analogWrite(pin_LED2, 0);
+        analogWrite(pin_LED3, LED_der);
+        analogWrite(pin_LED4, LED_der);
+      } else {
+        analogWrite(pin_LED1, LED_izq);
+        analogWrite(pin_LED2, LED_izq);
+        analogWrite(pin_LED3, 0);
+        analogWrite(pin_LED4, 0);
+      }
+    } else if (codigo == 1 || codigo == 6) {
+      // Secuencia sincronizada: todos los LEDs se encienden y apagan a la vez
+      if (ledState) {
+        analogWrite(pin_LED1, LED_izq);
+        analogWrite(pin_LED2, LED_izq);
+        analogWrite(pin_LED3, LED_der);
+        analogWrite(pin_LED4, LED_der);
+      } else {
+        analogWrite(pin_LED1, 0);
+        analogWrite(pin_LED2, 0);
+        analogWrite(pin_LED3, 0);
+        analogWrite(pin_LED4, 0);
+      }
     } else {
-      analogWrite(LED1, 0);         // Apagar el LED
+      // Apagar todos los LEDs si el código no es válido
+      analogWrite(pin_LED1, 0);
+      analogWrite(pin_LED2, 0);
+      analogWrite(pin_LED3, 0);
+      analogWrite(pin_LED4, 0);
     }
   }
 }

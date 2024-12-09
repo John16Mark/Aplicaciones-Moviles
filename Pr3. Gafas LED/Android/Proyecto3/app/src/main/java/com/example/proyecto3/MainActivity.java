@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private List<float[]> tabla_frecSonido = new ArrayList<>();
     private List<float[]> tabla_frecLED = new ArrayList<>();
     private List<float[]> tabla_intensidadLED = new ArrayList<>();
+    private List<float[]> tabla_patrones = new ArrayList<>();
     
     private List<float[]> tabla_interpolada_frec_sonido = new ArrayList<>();
     private List<float[]> tabla_interpolada_frec_LED = new ArrayList<>();
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_main);
 
         // Preguntar si el dispositivo tiene Bluetooth
@@ -166,6 +168,13 @@ public class MainActivity extends AppCompatActivity {
         tabla_intensidadLED.add(new float[]{50, 60});
         tabla_intensidadLED.add(new float[]{60, 100});
 
+        // Inicializar los puntos
+        tabla_patrones.add(new float[]{0, 1});
+        tabla_patrones.add(new float[]{5, 6});
+        tabla_patrones.add(new float[]{10, 2});
+        tabla_patrones.add(new float[]{15, 1});
+        tabla_patrones.add(new float[]{60, 1});
+
         puntosGrafica(tabla_frecSonido, tabla_interpolada_frec_sonido);
         puntosGrafica(tabla_frecLED, tabla_interpolada_frec_LED);
         puntosGrafica(tabla_intensidadLED, tabla_interpolada_intensidad_LED);
@@ -187,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
     // --------------------------------------------------------------
 
     // Función para verificar y solicitar permisos
-    @RequiresApi(api = Build.VERSION_CODES.S)
     private void checkBluetoothPermissions() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.BLUETOOTH_CONNECT}, REQUEST_BLUETOOTH_PERMISSION);
@@ -272,17 +280,18 @@ public class MainActivity extends AppCompatActivity {
 
     // Enviar valores cada 500 ms
     private void iniciarEnvioBluetooth() {
-        float segundosPorUnidad = 0.5f;
+        float segundosPorUnidad = 1f;
         float minutosAMilis = segundosPorUnidad * 1000f; // Conversión de minutos a milisegundos
 
         // Comenzar a reproducir ruido blanco
-        ruidoBlanco.startPlaying(tabla_frecSonido.get(0)[1]);
+        ruidoBlanco.startPlaying(tabla_frecSonido.get(0)[1], (int)tabla_patrones.get(0)[1]);
 
         runnable = new Runnable() {
             int contador_milis = 0; // Tiempo transcurrido en ms
             int index_fsonido = 0;
             int index_fLED = 0;
             int index_int = 0;
+            int index_patron = 0;
 
             @Override
             public void run() {
@@ -314,16 +323,25 @@ public class MainActivity extends AppCompatActivity {
                         index_int++;
                     float intensidad_LED = calcularFrecuencia(tiempoMinutos, index_int, tabla_intensidadLED);
 
+                    // ------------------------------------------
+                    //                   CÓDIGO
+                    // ------------------------------------------
+                    if (index_patron < tabla_patrones.size() - 1 && tiempoMinutos >= tabla_patrones.get(index_patron + 1)[0])
+                        index_patron++;
+                    float patron = tabla_patrones.get(index_patron)[1];
+
                     Log.d("Muestra", "Tiempo: " + tiempoMinutos + " min");
                     Log.d("Muestra", "frecuencia_sonido: " + frecuencia_sonido);
                     Log.d("Muestra", "frecuencia_LED: " + frecuencia_LED);
                     Log.d("Muestra", "intensidad_LED: " + intensidad_LED);
+                    Log.d("Muestra", "patrón: " + patron);
                     ruidoBlanco.updateFrequency(frecuencia_sonido);
-                    float frecRel = (100*frecuencia_LED)/40;
+                    ruidoBlanco.updatePattern((int) patron);
+                    float frecRel = frecuencia_LED;
                     float intRel = maxLED*intensidad_LED;
                     if(intRel > 100)
                         intRel = 100;
-                    sendBluetoothValue(frecRel, intRel);
+                    sendBluetoothValue(frecRel, intRel, (int) patron);
 
                     grafica_frecSonido.updateGraph((int) tiempoMinutos);
                     grafica_frecLED.updateGraph((int) tiempoMinutos);
@@ -352,10 +370,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void sendBluetoothValue(float frecuencia, float intensidad) {
+    private void sendBluetoothValue(float frecuencia, float intensidad, int patron) {
         if (outputStream != null) {
             try {
-                String valueToSend = frecuencia + "," + intensidad + "\n"; // Agrega un salto de línea si Arduino lo requiere
+                String valueToSend = frecuencia + "," + intensidad + "," + patron + "\n"; // Agrega un salto de línea si Arduino lo requiere
                 outputStream.write(valueToSend.getBytes());
                 //Log.d("Bluetooth", "Valor enviado: " + valueToSend);
             } catch (IOException e) {
