@@ -152,7 +152,7 @@ public class MainActivity extends Activity {
 
         a0_patrones.add(new float[]{0, 1});
 
-        al.add(new ListaEntrada(R.drawable.buho,
+        al.add(new ListaEntrada(R.drawable.a0,
                 "A0",
                 "15 minutos de acondicionamiento de relajación.",
                 a0_frecsonido,
@@ -186,7 +186,7 @@ public class MainActivity extends Activity {
         a1_patrones.add(new float[]{4, 2});
         a1_patrones.add(new float[]{5, 1});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.a1,
                 "A1",
                 "22 minutos de relajación/aprendizaje profundo.",
                 a1_frecsonido,
@@ -237,7 +237,7 @@ public class MainActivity extends Activity {
         a2_patrones.add(new float[]{27, 2});
         a2_patrones.add(new float[]{29, 4});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.a2,
                 "A2",
                 "30 minutos ejercicio de relajación.",
                 a2_frecsonido,
@@ -286,7 +286,7 @@ public class MainActivity extends Activity {
         a3_patrones.add(new float[]{27, 1});
         a3_patrones.add(new float[]{29, 2});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.a3,
                 "A3",
                 "30 minutos de Onda Beta.",
                 a3_frecsonido,
@@ -342,7 +342,7 @@ public class MainActivity extends Activity {
         a4_patrones.add(new float[]{22, 4});
         a4_patrones.add(new float[]{24, 1});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.a4,
                 "A4",
                 "25 minutos de Alfa-Beta.",
                 a4_frecsonido,
@@ -376,7 +376,7 @@ public class MainActivity extends Activity {
 
         a5_patrones.add(new float[]{0, 1});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.a5,
                 "A5",
                 "30 minutos de profunda onda Alfa-Theta.",
                 a5_frecsonido,
@@ -410,7 +410,7 @@ public class MainActivity extends Activity {
 
         a6_patrones.add(new float[]{0, 1});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.a6,
                 "A6",
                 "45 minutos de relajación para dormir.",
                 a6_frecsonido,
@@ -440,7 +440,7 @@ public class MainActivity extends Activity {
         b0_patrones.add(new float[]{30, 1});
         b0_patrones.add(new float[]{35, 2});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.b0,
                 "B0",
                 "40 minutos de Armonía de la Tierra.",
                 b0_frecsonido,
@@ -475,7 +475,7 @@ public class MainActivity extends Activity {
         b1_patrones.add(new float[]{4, 2});
         b1_patrones.add(new float[]{7, 1});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.b1,
                 "B1",
                 "36 minutos de relajación profunda y aprendizaje Theta.",
                 b1_frecsonido,
@@ -509,7 +509,7 @@ public class MainActivity extends Activity {
         b2_patrones.add(new float[]{25, 10});
         b2_patrones.add(new float[]{28, 2});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.b2,
                 "B2",
                 "30 minutos de Alta Creatividad.",
                 b2_frecsonido,
@@ -552,7 +552,7 @@ public class MainActivity extends Activity {
         b3_patrones.add(new float[]{40, 2});
         b3_patrones.add(new float[]{45, 1});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.b3,
                 "B3",
                 "46 minutos de relajación profunda/alta creatividad.",
                 b3_frecsonido,
@@ -592,7 +592,7 @@ public class MainActivity extends Activity {
         b4_patrones.add(new float[]{20, 4});
         b4_patrones.add(new float[]{24, 1});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.b4,
                 "B4",
                 "25 minutos de sintonía general.",
                 b4_frecsonido,
@@ -631,7 +631,7 @@ public class MainActivity extends Activity {
         b5_patrones.add(new float[]{30, 2});
         b5_patrones.add(new float[]{40, 1});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.b5,
                 "B5",
                 "45 minutos de uso general.",
                 b5_frecsonido,
@@ -659,7 +659,7 @@ public class MainActivity extends Activity {
         b6_patrones.add(new float[]{10, 6});
         b6_patrones.add(new float[]{40, 1});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.b6,
                 "B6",
                 "46 minutos de aprendizaje acelerado.",
                 b6_frecsonido,
@@ -696,7 +696,7 @@ public class MainActivity extends Activity {
         ab0_patrones.add(new float[]{15, 1});
         ab0_patrones.add(new float[]{60, 1});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.ab0,
                 "AB0",
                 "60 minutos de relajación ultra-profunda.",
                 ab0_frecsonido,
@@ -723,7 +723,7 @@ public class MainActivity extends Activity {
         ab1_patrones.add(new float[]{4, 6});
         ab1_patrones.add(new float[]{14, 1});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.ab1,
                 "AB1",
                 "15 minutos de Siesta de gato.",
                 ab1_frecsonido,
@@ -758,7 +758,7 @@ public class MainActivity extends Activity {
         ab2_patrones.add(new float[]{20, 3});
         ab2_patrones.add(new float[]{30, 4});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.ab2,
                 "AB2",
                 "40 minutos de Alerta Delta.",
                 ab2_frecsonido,
@@ -782,7 +782,7 @@ public class MainActivity extends Activity {
         ab3_patrones.add(new float[]{0, 1});
         ab3_patrones.add(new float[]{15, 2});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.ab3,
                 "AB3",
                 "30 minutos de CREATIVIDAD K-COMPLEX.",
                 ab3_frecsonido,
@@ -815,7 +815,7 @@ public class MainActivity extends Activity {
         ab4_patrones.add(new float[]{8, 6});
         ab4_patrones.add(new float[]{70, 1});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.ab4,
                 "AB4",
                 "75 minutos de ESCAPE DELTA.",
                 ab4_frecsonido,
@@ -851,7 +851,7 @@ public class MainActivity extends Activity {
         ab5_patrones.add(new float[]{7, 5});
         ab5_patrones.add(new float[]{34, 1});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.ab5,
                 "AB5",
                 "36 minutos de Memoria/Recuerdo.",
                 ab5_frecsonido,
@@ -901,7 +901,7 @@ public class MainActivity extends Activity {
         ab6_patrones.add(new float[]{30, 3});
         ab6_patrones.add(new float[]{34, 1});
 
-        al.add(new ListaEntrada(R.drawable.colibri,
+        al.add(new ListaEntrada(R.drawable.ab6,
                 "AB6",
                 "35 minutos de Caleidoscopio.",
                 ab6_frecsonido,
