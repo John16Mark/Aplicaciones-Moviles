@@ -122,8 +122,6 @@ public class Grafica extends View {
                     prevX = x;
                     prevY = y;
                 }
-
-                //canvas.drawCircle(x, y, 10, pointPaint);
             }
         }
     }

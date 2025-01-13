@@ -14,7 +14,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -297,60 +296,54 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 // Tiempo total en milisegundos hasta el último punto
                 int milisMax = (int) (tabla_frecLED.get(tabla_frecLED.size() - 1)[0] * minutosAMilis);
-                if (contador_milis <= milisMax && ejecutar) {
-                    // Convertir el tiempo actual a minutos
-                    float tiempoMinutos = contador_milis / minutosAMilis;
+                float tiempoMinutos = contador_milis / minutosAMilis;   // Convertir el tiempo actual a minutos
 
-                    // ------------------------------------------
-                    //             FRECUENCIA SONIDO
-                    // ------------------------------------------
+
+                if (contador_milis <= milisMax && ejecutar) {
                     // Si el tiempo actual supera el próximo punto, avanzar el índice
+                    // Frecuencia sonido
                     if (index_fsonido < tabla_frecSonido.size() - 1 && tiempoMinutos >= tabla_frecSonido.get(index_fsonido + 1)[0])
                         index_fsonido++;
-                    float frecuencia_sonido = calcularFrecuencia(tiempoMinutos, index_fsonido, tabla_frecSonido);
-
-                    // ------------------------------------------
-                    //                FRECUENCIA LED
-                    // ------------------------------------------
+                    // Frecuencia brillo LED
                     if (index_fLED < tabla_frecLED.size() - 1 && tiempoMinutos >= tabla_frecLED.get(index_fLED + 1)[0])
                         index_fLED++;
-                    float frecuencia_LED = calcularFrecuencia(tiempoMinutos, index_fLED, tabla_frecLED);
-
-                    // ------------------------------------------
-                    //               INTENSIDAD LED
-                    // ------------------------------------------
+                    // intensidad brillo LED
                     if (index_int < tabla_intensidadLED.size() - 1 && tiempoMinutos >= tabla_intensidadLED.get(index_int + 1)[0])
                         index_int++;
-                    float intensidad_LED = calcularFrecuencia(tiempoMinutos, index_int, tabla_intensidadLED);
-
-                    // ------------------------------------------
-                    //                   CÓDIGO
-                    // ------------------------------------------
+                    // Patrón de brillo y parpadeo de LED y sonido
                     if (index_patron < tabla_patrones.size() - 1 && tiempoMinutos >= tabla_patrones.get(index_patron + 1)[0])
                         index_patron++;
-                    float patron = tabla_patrones.get(index_patron)[1];
-
-                    Log.d("Muestra", "Tiempo: " + tiempoMinutos + " min");
-                    Log.d("Muestra", "frecuencia_sonido: " + frecuencia_sonido);
-                    Log.d("Muestra", "frecuencia_LED: " + frecuencia_LED);
-                    Log.d("Muestra", "intensidad_LED: " + intensidad_LED);
-                    Log.d("Muestra", "patrón: " + patron);
-                    ruidoBlanco.updateFrequency(frecuencia_sonido);
-                    ruidoBlanco.updatePattern((int) patron);
-                    float frecRel = frecuencia_LED;
-                    float intRel = maxLED*intensidad_LED;
-                    if(intRel > 100)
-                        intRel = 100;
-                    sendBluetoothValue(frecRel, intRel, (int) patron);
-
-                    grafica_frecSonido.updateGraph((int) tiempoMinutos);
-                    grafica_frecLED.updateGraph((int) tiempoMinutos);
-                    grafica_intensidadLED.updateGraph((int) tiempoMinutos);
-
-                    // Incrementar el contador y ejecutar el siguiente muestreo
-                    contador_milis += tam_paso;
-                    handler.postDelayed(this, tam_paso);
                 }
+
+                float frecuencia_sonido = calcularFrecuencia(tiempoMinutos, index_fsonido, tabla_frecSonido);
+                float frecuencia_LED = calcularFrecuencia(tiempoMinutos, index_fLED, tabla_frecLED);
+                float intensidad_LED = calcularFrecuencia(tiempoMinutos, index_int, tabla_intensidadLED);
+                float patron = tabla_patrones.get(index_patron)[1];
+
+                Log.d("Muestra", "Tiempo: " + tiempoMinutos + " min");
+                Log.d("Muestra", "frecuencia_sonido: " + frecuencia_sonido);
+                Log.d("Muestra", "frecuencia_LED: " + frecuencia_LED);
+                Log.d("Muestra", "intensidad_LED: " + intensidad_LED);
+                Log.d("Muestra", "patrón: " + patron);
+                ruidoBlanco.updateFrequency(frecuencia_sonido);
+                ruidoBlanco.updatePattern((int) patron);
+                float frecRel = frecuencia_LED;
+                float intRel = maxLED*intensidad_LED;
+                if(intRel > 100)
+                    intRel = 100;
+                if(intRel < 0)
+                    intRel = 0;
+                sendBluetoothValue(frecRel, intRel, (int) patron);
+
+                grafica_frecSonido.updateGraph((int) tiempoMinutos);
+                grafica_frecLED.updateGraph((int) tiempoMinutos);
+                grafica_intensidadLED.updateGraph((int) tiempoMinutos);
+
+                // Incrementar el contador y ejecutar el siguiente muestreo
+                if (contador_milis <= milisMax && ejecutar) {
+                    contador_milis += tam_paso;
+                }
+                handler.postDelayed(this, tam_paso);
             }
         };
 
