@@ -1,0 +1,19 @@
+<!-- res/drawable/custom_seekbar.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Fondo de la barra (track) -->
+    <item>
+        <shape>
+            <size android:height="20dp" /> <!-- Ajusta el grosor del fondo -->
+            <solid android:color="#CCCCCC" /> <!-- Color del fondo -->
+        </shape>
+    </item>
+    <!-- Barra de progreso -->
+    <item>
+        <clip>
+            <shape>
+                <size android:height="20dp" /> <!-- Ajusta el grosor del progreso -->
+                <solid android:color="#0C6E01" /> <!-- Color del progreso -->
+            </shape>
+        </clip>
+    </item>
+</layer-list>
